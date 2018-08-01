@@ -10,6 +10,9 @@ import UIKit
 import Charts
 
 class ViewController: UIViewController, ChartViewDelegate {
+    
+    weak var axisFormatDelegate: IAxisValueFormatter?
+    
     @IBOutlet weak var lineChartView: LineChartView!
     @IBOutlet weak var pieChartView: PieChartView!
     
@@ -23,7 +26,10 @@ class ViewController: UIViewController, ChartViewDelegate {
         
     }
     
+
+    
     func setChart() {
+        
         
         // Input Data
         let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
@@ -44,6 +50,8 @@ class ViewController: UIViewController, ChartViewDelegate {
         let lineChartData = LineChartData(dataSet: lineChartDataSet)
         lineChartView.data = lineChartData
         
+        let xAxisValue = lineChartView.xAxis
+        xAxisValue.valueFormatter = axisFormatDelegate
         
         // PieChart
         var pieEntries: [PieChartDataEntry] = Array()
@@ -77,3 +85,4 @@ class ViewController: UIViewController, ChartViewDelegate {
     }
     
 }
+
