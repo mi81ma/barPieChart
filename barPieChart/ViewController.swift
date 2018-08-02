@@ -9,9 +9,7 @@
 import UIKit
 import Charts
 
-class ViewController: UIViewController, ChartViewDelegate {
-    
-    weak var axisFormatDelegate: IAxisValueFormatter?
+class ViewController: UIViewController {
     
     @IBOutlet weak var lineChartView: LineChartView!
     @IBOutlet weak var pieChartView: PieChartView!
@@ -22,18 +20,20 @@ class ViewController: UIViewController, ChartViewDelegate {
         
         // Do any additional setup after loading the view.
         
-        setChart()
+        let x = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+        let y = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0]
+        
+        setChart(month: x, Sold: y)
         
     }
     
 
-    
-    func setChart() {
+    func setChart(month: Array<String>, Sold: Array<Double>) {
         
         
         // Input Data
-        let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
-        let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0]
+        let unitsSold = Sold
+        let months = month
         
         
         // LineChart
@@ -50,8 +50,20 @@ class ViewController: UIViewController, ChartViewDelegate {
         let lineChartData = LineChartData(dataSet: lineChartDataSet)
         lineChartView.data = lineChartData
         
-        let xAxisValue = lineChartView.xAxis
-        xAxisValue.valueFormatter = axisFormatDelegate
+        
+        // LineChartFormatterのインスタンスをつくる
+        var foramtter = LineChartFormatter()
+        // X軸の値をformatterのプロパティにセット
+        foramtter.xAxisStringArray = month
+        
+        lineChartView.xAxis.valueFormatter = foramtter
+    
+        
+        // x軸のラベルをボトムに表示
+        lineChartView.xAxis.labelPosition = .bottom
+        
+        // LineChartの背景色
+        lineChartView.backgroundColor = UIColor(red: 189/255, green: 195/255, blue: 199/255, alpha: 1)
         
         // PieChart
         var pieEntries: [PieChartDataEntry] = Array()
@@ -67,6 +79,12 @@ class ViewController: UIViewController, ChartViewDelegate {
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         pieChartView.data = pieChartData
         
+        
+//// PieChartを真ん中まで塗りつぶす。Defaultではtrue
+//   pieChartView.drawHoleEnabled = false
+        
+        // グラフの中央にテキストを表示
+        pieChartView.centerText = "2018/4/1"
         
         // PieChartColor
         var colors: [UIColor] = []
@@ -84,5 +102,15 @@ class ViewController: UIViewController, ChartViewDelegate {
         
     }
     
+    class LineChartFormatter: NSObject, IAxisValueFormatter{
+        // x軸のラベルの値を受け取るプロパティつくる。initializeされたときはnilがはいるようにオプショナル型にしておく
+        var xAxisStringArray: [String]!
+        
+        // value[Double]で受け取る数値を、StringArrayでmappingするメソッド
+        func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+            // 0 -> Jan, 1 -> Feb...
+            return xAxisStringArray[Int(value)]
+        }
+    }
 }
 
