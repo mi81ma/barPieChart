@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     }
     
 
+    
     func setChart(month: Array<String>, Sold: Array<Double>) {
         
         
